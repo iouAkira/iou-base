@@ -32,6 +32,12 @@ if [ "$1" ]; then
   if [ "$INIT_ENVS" ]; then
     for env in $(echo "$INIT_ENVS" | tr "&" " "); do
       "${env}Init"
+      if [ $? -ne 0 ]; then
+        echo "${env}环境初始化出错❌，重启后继续尝试初始化"
+        exit 1
+      else
+        echo "${env}环境初始化完成✅"
+      fi
     done
   fi
 fi
@@ -52,20 +58,24 @@ for repoInx in $(cat /data/repos.json | jq .repos | jq 'keys|join(" ")' | sed "s
   echo "切换到 $repoBranch 分支..."
   git checkout $repoBranch
   echo "执行$repoName仓库下面的程序入口脚本"
-  sh iou-use.sh
+  sh iou-entry.sh
 done
 echo "--------------------------------------------------/data/repos.json配置结束---------------------------------------------------"
 
 firstFile="y"
-for cronFile in $(ls "$CRON_FILE_DIR" | grep ".js" | tr "\n" " "); do
+for cronFile in $(ls "$CRON_FILE_DIR" | grep ".sh" | tr "\n" " "); do
   if [ $firstFile == "y" ]; then
-    echo "#$firstFile cron list"
+    echo "#$cronFile cron list" >"$CRON_FILE_DIR/merge_all_cron.sh"
     firstFile="n"
+  else
+    echo "#$cronFile cron list" >"$CRON_FILE_DIR/merge_all_cron.sh"
   fi
   cat -e $cronFile >>"$CRON_FILE_DIR/merge_all_cron.sh"
 done
 
 if [ "$up_cmd" ]; then
+  echo "set crontab lsit"
+  crontab "$CRON_FILE_DIR/merge_all_cron.sh"
   echo "keep run..."
   crond -f
 else

@@ -3,12 +3,14 @@
     {
       "repo_name": "repo1",
       "repo_url": "https://github.com/aaaa/aaaaa.git",
-      "repo_branch": "master"
+      "repo_branch": "master",
+      "repo_data_path": "/data/repo1_data"
     },
     {
       "repo_name": "repo2",
       "repo_url": "https://github.com/bbbb/bbbbb.git",
-      "repo_branch": "main"
+      "repo_branch": "main",
+      "repo_data_path": "/data/repo1_data"
     }
   ]
 }

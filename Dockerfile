@@ -15,9 +15,11 @@ RUN set -ex \
     && mkdir /iouCron \
     && mkdir /iouRepos
 
-COPY entrypoint.sh /usr/local/bin
+COPY entrypoint.sh /usr/local/bin/docker_entrypoint.sh
 
-ENTRYPOINT ["docker_entrypoint.sh"]
+RUN chmod +x /usr/local/bin/docker_entrypoint.sh
 
-CMD [ "keep-run" ]
+WORKDIR /iouRepos
+
+ENTRYPOINT ["docker_entrypoint.sh","keep-run"]
 
