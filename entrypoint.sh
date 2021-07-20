@@ -43,17 +43,13 @@ if [ "$1" ]; then
 fi
 
 echo "------------------------------------------------读取/data/repos.json仓库相关配置，并进行执行配置------------------------------------------------"
-echo "检查/data/repos.json里面配置的需要使用的仓库信息"
+repo_sync
+
+echo "执行仓库入口脚本"
 for repoInx in $(cat /data/repos.json | jq .repos | jq 'keys|join(" ")' | sed "s/\"//g"); do
   cd "$REPOS_DIR"
   repoName=$(cat /data/repos.json | jq ".repos | .[$repoInx] | .repo_name")
-  repoUrl=$(cat /data/repos.json | jq ".repos | .[$repoInx] | .repo_url")
   repoBranch=$(cat /data/repos.json | jq ".repos | .[$repoInx] | .repo_branch")
-  echo "仓库名称：$repoName"
-  echo "仓库地址：$repoUrl"
-  echo "仓库分支：$repoBranch"
-  echo "开始clone仓库..."
-  git clone "$repoUrl" "$REPOS_DIR/$repoName"
   cd "$REPOS_DIR/$repoName"
   echo "切换到 $repoBranch 分支..."
   git checkout $repoBranch
