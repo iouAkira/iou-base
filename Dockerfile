@@ -38,7 +38,7 @@ VOLUME [ "/data" ]
 
 WORKDIR /iouRepos
 
-ENTRYPOINT ["docker_entrypoint.sh"]
+ENTRYPOINT ["entrypoint.sh"]
 
 CMD ["keep-run"]
 

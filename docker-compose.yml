@@ -1,0 +1,20 @@
+iou:
+  image: akyakya/iou-base
+  container_name: iou
+  restart: always
+  volumes:
+    - ./data:/data
+  tty: true
+  environment:
+    # 部分地区用户连接apk官方源速度可能较慢，可通过此变量更换不同地区的源 需要的放开APK_REPO注释并配置
+    - APK_REPO=mirrors.tuna.tsinghua.edu.cn
+    # 容器初始化启动的时候，想要安装的包，本镜像基于alpine，具体可安装的包可在[官方源查询](https://pkgs.alpinelinux.org/packages)配置的安装包请确定正确，否则可能导致容器无法完成启动
+    - APK_ADD_PKG=curl&jq&wget
+    # 部分地区用户连接pip官方源速度可能较慢，可通过此变量更换不同地区的源
+    - PIP_REPO=https://pypi.tuna.tsinghua.edu.cn/simple
+    # 部分地区用户连接npm官方源速度可能较慢，可通过此变量更换不同地区的源
+    - NPM_REPO=https://registry.npm.taobao.org
+    # 部分地区用户连接go资源速度可能较慢，可通过此变量更换不同地区 CND 镜像加速
+    - GO_PROXY=https://mirrors.aliyun.com/goproxy/
+    # 启动容器初始化想要安装的环境变量。例：INIT_ENVS=node&python
+    - INIT_ENVS=node
