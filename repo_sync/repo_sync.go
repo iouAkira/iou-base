@@ -33,7 +33,7 @@ func main() {
 
 func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 	if rs.Exists(repoConfigJson) {
-		fmt.Printf("检测到仓库配置文件 %v，开始同步仓库操作。", repoConfigJson)
+		fmt.Printf("检测到仓库配置文件 %v，开始同步仓库操作。\n", repoConfigJson)
 		var repoConfig rs.ReposConfig
 		f, _ := ioutil.ReadFile(repoConfigJson)
 		if err := json.Unmarshal(f, &repoConfig); err == nil {
@@ -41,7 +41,7 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 			for i, repo := range repoConfig.Repos {
 				if repo.RepoPrivate {
 					if repo.GitAccount != "" && repo.GitToken != "" {
-						fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为私有库，账户、Token已配置，开始同步\n", i+1, repo.RepoName)
+						fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为私有库，账户、Token已配置，开始同步\n", i+1, repo.RepoName)
 						errSr := SyncRepo(repo.RepoURL, fmt.Sprintf("%v/%v", repoBaseDir, repo.RepoName), repo.GitAccount, repo.GitToken)
 						if errSr == nil {
 							succCnt += 1
@@ -53,7 +53,7 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 						failCnt += 1
 					}
 				} else {
-					fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为公开仓库，开始同步\n", i+1, repo.RepoName)
+					fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为公开仓库，开始同步\n", i+1, repo.RepoName)
 					errSr := SyncRepo(repo.RepoURL, repo.RepoName, repo.GitAccount, repo.GitToken)
 					if errSr == nil {
 						succCnt += 1
