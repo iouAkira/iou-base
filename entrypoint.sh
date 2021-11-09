@@ -55,6 +55,7 @@ echo "-e"
 repo_sync
 
 echo ">>>>>>>>>>>>执行仓库入口脚本"
+echo "-e"
 for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"//g"); do
     cd "$REPOS_DIR"
     repoName=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_name")
@@ -76,7 +77,7 @@ for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"
     echo "-e"
 done
 
-echo "======================================================$REPOS_CONFIG]配置结束================================================"
+echo "========================================================$REPOS_CONFIG]配置结束================================================="
 
 firstFile="y"
 echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >"$CRON_FILE_PATH/entrypoint_cron.sh"
