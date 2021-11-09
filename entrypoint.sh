@@ -31,7 +31,7 @@ if [ "$1" ]; then
   fi
   if [ "$INIT_ENVS" ]; then
     for env in $(echo "$INIT_ENVS" | tr "&" " "); do
-      "$envInit"
+      "${env}Init"
       if [ $? -ne 0 ]; then
         echo "[$env]环境初始化出错❌，重启后继续尝试初始化"
         exit 1
