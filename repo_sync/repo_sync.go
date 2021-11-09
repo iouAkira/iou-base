@@ -83,7 +83,7 @@ func SyncRepo(repoUrl string, repoPath string, gitAccount string, gitToken strin
 }
 
 func cloneRepo(url string, directory string, gitAccount string, gitToken string) error {
-	fmt.Printf("git clone %s to %s", url, directory)
+	fmt.Printf("git clone %s to %s\n", url, directory)
 
 	r, err := git.PlainClone(directory, false, &git.CloneOptions{
 		Auth: &http.BasicAuth{
