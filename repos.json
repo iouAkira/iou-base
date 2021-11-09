@@ -1,22 +1,22 @@
 {
   "repos": [
     {
+      "repo_name": "iou-base",
+      "repo_url": "https://github.com/iouAkira/iou-base.git",
+      "repo_branch": "main"
+    },
+    {
+      "repo_name": "iou-dd",
+      "repo_url": "https://github.com/iouAkira/iou-dd.git",
+      "repo_branch": "main"
+    },
+    {
       "repo_name": "woof",
       "repo_url": "https://github.com/iouAkira/xxxxx.git",
       "repo_branch": "master",
       "repo_private": true,
       "git_account": "iouAkira",
       "git_token": "xxxxxxxx"
-    },
-    {
-      "repo_name": "curtinlv",
-      "repo_url": "https://github.com/curtinlv/JD-Script.git",
-      "repo_branch": "master"
-    },
-    {
-      "repo_name": "iou-base",
-      "repo_url": "https://github.com/iouAkira/iou-base.git",
-      "repo_branch": "main"
     }
   ]
 }
