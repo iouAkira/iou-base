@@ -41,7 +41,7 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 			for i, repo := range repoConfig.Repos {
 				if repo.RepoPrivate {
 					if repo.GitAccount != "" && repo.GitToken != "" {
-						fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为私有库，账户、Token已配置，开始同步", i+1, repo.RepoName)
+						fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为私有库，账户、Token已配置，开始同步\n", i+1, repo.RepoName)
 						errSr := SyncRepo(repo.RepoURL, fmt.Sprintf("%v/%v", repoBaseDir, repo.RepoName), repo.GitAccount, repo.GitToken)
 						if errSr == nil {
 							succCnt += 1
@@ -49,11 +49,11 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 							failCnt += 1
 						}
 					} else {
-						fmt.Printf("第%v个仓库，名字为%v，为私有库，但是账户、Token未配置，同步失败", i+1, repo.RepoName)
+						fmt.Printf("第%v个仓库，名字为%v，为私有库，但是账户、Token未配置，同步失败\n", i+1, repo.RepoName)
 						failCnt += 1
 					}
 				} else {
-					fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为公开仓库，开始同步", i+1, repo.RepoName)
+					fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为公开仓库，开始同步\n", i+1, repo.RepoName)
 					errSr := SyncRepo(repo.RepoURL, repo.RepoName, repo.GitAccount, repo.GitToken)
 					if errSr == nil {
 						succCnt += 1
@@ -63,20 +63,20 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 				}
 
 			}
-			fmt.Printf("\n仓库同步已完成！成功%v个,失败%v个", succCnt, failCnt)
+			fmt.Printf("仓库同步已完成！成功%v个,失败%v个\n\n", succCnt, failCnt)
 		} else {
-			fmt.Printf("读取仓库配置文件出错，跳过同步仓库操作。请检查 %v 文件配置是否正确", repoConfigJson)
+			fmt.Printf("读取仓库配置文件出错，跳过同步仓库操作。请检查 %v 文件配置是否正确\n", repoConfigJson)
 		}
 	} else {
-		fmt.Printf("仓库配置文件 %v 不存在，跳过同步仓库操作。", repoConfigJson)
+		fmt.Printf("仓库配置文件 %v 不存在，跳过同步仓库操作。\n", repoConfigJson)
 	}
 }
 func SyncRepo(repoUrl string, repoPath string, gitAccount string, gitToken string, ) error {
 	if rs.Exists(repoPath) {
-		fmt.Printf("脚本仓库目录已存在，执行pull")
+		fmt.Printf("脚本仓库目录已存在，执行pull\n")
 		return pullRepo(repoPath, gitAccount, gitToken)
 	} else {
-		fmt.Printf("脚本仓库目录不存在，执行clone")
+		fmt.Printf("脚本仓库目录不存在，执行clone\n")
 		return cloneRepo(repoUrl, repoPath, gitAccount, gitToken)
 	}
 
@@ -135,9 +135,9 @@ func pullRepo(path string, gitAccount string, gitToken string) error {
 		}})
 	if errPull != nil {
 		if errPull.Error() == "already up-to-date" {
-			fmt.Printf("已经是最新代码，暂无更新。")
+			fmt.Printf("已经是最新代码，暂无更新。\n")
 		} else if errPull.Error() == "authentication required" {
-			fmt.Printf("用户密码登陆失败，更新失败。")
+			fmt.Printf("用户密码登陆失败，更新失败。\n")
 		} else {
 			fmt.Printf(errPull.Error())
 			return errPull
@@ -176,6 +176,6 @@ func resetHard(path string) {
 	} else {
 		//fmt.Println(command.ProcessState.Pid())
 		//fmt.Println(command.ProcessState.Sys().(syscall.WaitStatus).ExitStatus())
-		fmt.Printf("还原本地修改（新增文件不受影响）防止更新冲突...")
+		fmt.Printf("还原本地修改（新增文件不受影响）防止更新冲突...\n")
 	}
 }

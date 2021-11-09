@@ -26,7 +26,8 @@ if [ "$1" ]; then
   if [ "$APK_REPO" ]; then
     sed -i "s/dl-cdn.alpinelinux.org/$APK_REPO/g" /etc/apk/repositories
   fi
-  if [ "$APK_ADD_PKG"]; then
+  apk add git
+  if [ "$APK_ADD_PKG" ]; then
     apk add "$(echo $APK_ADD_PKG | tr "&" " ")"
   fi
   if [ "$INIT_ENVS" ]; then
@@ -60,8 +61,8 @@ for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"
     echo "未指定[$repoName]仓库分支，使用当前默认分支"
   else
     echo "[$repoName]仓库切换到指定的[$repoBranch]分支..."
+    git checkout $repoBranch
   fi
-  git checkout $repoBranch
 
   if [ -f "$REPOS_DIR/$repoName/iou-entry.sh" ]; then
     echo "执行[$repoName]仓库下面的程序入口脚本"
@@ -74,7 +75,8 @@ done
 echo "--------------------------------------------------[$REPOS_CONFIG]配置结束---------------------------------------------------"
 
 firstFile="y"
-echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >entrypoint_cron.sh
+echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >"$CRON_FILE_PATH/entrypoint_cron.sh"
+
 for cronFile in $(ls "$CRON_FILE_PATH" | grep ".sh" | tr "\n" " "); do
   if [ $firstFile == "y" ]; then
     echo "#$cronFile cron list" >"$CRON_FILE_PATH/merge_all_cron.sh"
