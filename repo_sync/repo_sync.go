@@ -14,20 +14,29 @@ import (
 	"runtime/debug"
 )
 
-var (
-	//repoConfigJson = "/data/repos.json"
-	//repoBaseDir="/iouRepos"
-	repoConfigJson = "/Users/akira-work/iou-base-docker-image/repos.json"
-	repoBaseDir    = "/Users/akira-work/iou-repos"
-)
-
 func main() {
-	readRepoConfig()
+	// ENV VER=0.1 \
+    // MNT_DIR=/data \
+    // CRON_FILE_PATH=/iouCron \
+	mntDir="/data"
+	repoBaseDir="/iouRepos"
+	
+	if os.Getenv("MNT_DIR") != "" {
+		mntDir = os.Getenv("MNT_DIR")
+	}
+	if os.Getenv("REPOS_DIR") != "" {
+		repoBaseDir = os.Getenv("REPOS_DIR")
+	}
+	repoConfigJson=fmt.Sprintf("%v/repos.json",mntDir)
+	if os.Getenv("REPOS_CONFIG") != "" {
+		repoConfigJson = os.Getenv("REPOS_CONFIG")
+	}
+	
+	readRepoConfig(repoConfigJson,repoBaseDir)
 }
 
-func readRepoConfig() {
+func readRepoConfig(repoConfigJson string,repoBaseDir string) {
 	if rs.Exists(repoConfigJson) {
-
 		log.Printf("检测到仓库配置文件 %v，开始同步仓库操作。", repoConfigJson)
 		var repoConfig rs.ReposConfig
 		f, _ := ioutil.ReadFile(repoConfigJson)
@@ -37,7 +46,7 @@ func readRepoConfig() {
 				if repo.RepoPrivate {
 					if repo.GitAccount != "" && repo.GitToken != "" {
 						log.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，名字为%v，为私有库，账户、Token已配置，开始同步", i+1, repo.RepoName)
-						errSr := SyncRepo(repo.RepoURL, repo.RepoName, repo.GitAccount, repo.GitToken)
+						errSr := SyncRepo(repo.RepoURL, fmt.Sprintf("%v/%v", repoBaseDir, repoDirName), repo.GitAccount, repo.GitToken)
 						if errSr == nil {
 							succCnt += 1
 						} else {
@@ -66,8 +75,7 @@ func readRepoConfig() {
 		log.Printf("仓库配置文件 %v 不存在，跳过同步仓库操作。", repoConfigJson)
 	}
 }
-func SyncRepo(repoUrl string, repoDirName string, gitAccount string, gitToken string, ) error {
-	repoPath := fmt.Sprintf("%v/%v", repoBaseDir, repoDirName)
+func SyncRepo(repoUrl string, repoPath string, gitAccount string, gitToken string, ) error {
 	if rs.Exists(repoPath) {
 		log.Printf("脚本仓库目录已存在，执行pull")
 		return pullRepo(repoPath, gitAccount, gitToken)
@@ -93,11 +101,11 @@ func cloneRepo(url string, directory string, gitAccount string, gitToken string)
 	if err != nil {
 		return err
 	}
-	// ... retrieving the branch being pointed by HEAD
+
 	ref, err := r.Head()
 
 	rs.CheckIfError(err)
-	// ... retrieving the commit object
+
 	commit, err := r.CommitObject(ref.Hash())
 	rs.CheckIfError(err)
 	fmt.Println(commit)

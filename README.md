@@ -15,7 +15,7 @@
 | `GO_PROXY` | 非必须 |部分地区用户连接`go`资源速度可能较慢，可通过此变量更换不同地区 CND 镜像加速。例：`GO_PROXY=https://mirrors.aliyun.com/goproxy/`|
 | `INIT_ENVS` | 非必须 |启动容器初始化想要安装的环境变量。例：`INIT_ENVS=node&python`|
 |配置文件||(容器启动需要挂载一个`/data`文件夹，`/data`下面有`repos.json`需要使用的仓库信息配置和每个仓库对应的数据存放文件夹`repo1_data`、`repo2_data`类似等等)|
-| `MNT_DIR` | 不建议修改 |配置的所有仓库产生的需要查看的数据请放在该目录下。默认`/data` 例如：`/data/repo1_data`，`/data/repo2`|
-| `CRON_FILE_DIR` | 不建议修改 |所有需要加入crontab的定时任务文件`xxx.sh`都需要生成在该目录。默认值`/iouCron` 例如：`/iouCron/repo1_cron.sh`，`/iouCron/repo2_cronlist.sh`|
+| `MNT_DIR` | 不建议修改 |配置的所有仓库产生的需要查看的数据请放在该目录下。默认`/data` 例如：`/data/repo1_data`，`/data/repo2_data`|
 | `REPOS_DIR` | 不建议修改 |配置的所有仓库都clone在该目录下。默认值`/iouRepos` 例如：`/iouRepos/repo1`，`/iouRepos/repo2`|
+| `CRON_FILE_PATH` | 不建议修改 |所有需要加入crontab的定时任务文件`xxx.sh`都需要生成在该目录。默认值`/iouCron` 例如：`/iouCron/repo1_cron.sh`，`/iouCron/repo2_cron.sh`|
 | `/data/repos.json` | 非必须 |默认为空启动一个什么功能都没有容器，可以手动进入容器配置想使用的功能。如果配置仓库地址，被使用仓库根需要包含一个`iou-entry.sh`里面包含的需要包含配置环境启动使用该仓库指令的脚本。当前`iou-entry.sh`里面可以继续嵌套调用`shell`配合完成自己想要的功能|

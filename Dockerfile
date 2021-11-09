@@ -16,8 +16,8 @@ LABEL AUTHOR="iouAkira <ZS5ha2ltb3RvLmFraXJhQGdtYWlsLmNvbQ==>"
 
 ENV VER=0.1 \
     MNT_DIR=/data \
-    CRON_FILE_DIR=/iouCron \
-    REPOS_DIR=/iouRepos
+    REPOS_DIR=/iouRepos \
+    CRON_FILE_PATH=/iouCron
 
 RUN set -ex \
     && apk update && apk upgrade\
@@ -29,14 +29,16 @@ RUN set -ex \
     && mkdir /iouRepos
 
 COPY --from=goBuild /iou-base/repo_sync/repo_sync /usr/local/bin/repo_sync
-COPY entrypoint.sh /usr/local/bin/docker_entrypoint.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 
 RUN chmod +x /usr/local/bin/repo_sync \ 
-    && chmod +x /usr/local/bin/docker_entrypoint.sh
+    && chmod +x /usr/local/bin/entrypoint.sh
 
 VOLUME [ "/data" ]
 
 WORKDIR /iouRepos
 
-ENTRYPOINT ["docker_entrypoint.sh","keep-run"]
+ENTRYPOINT ["docker_entrypoint.sh"]
+
+CMD ["keep-run"]
 
