@@ -26,9 +26,8 @@ if [ "$1" ]; then
   if [ "$APK_REPO" ]; then
     sed -i "s/dl-cdn.alpinelinux.org/$APK_REPO/g" /etc/apk/repositories
   fi
-  apk add git
   if [ "$APK_ADD_PKG" ]; then
-    apk add "$(echo $APK_ADD_PKG | tr "&" " ")"
+    apk add $(echo $APK_ADD_PKG | tr "&" " ")
   fi
   if [ "$INIT_ENVS" ]; then
     for env in $(echo "$INIT_ENVS" | tr "&" " "); do
@@ -78,6 +77,7 @@ firstFile="y"
 echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >"$CRON_FILE_PATH/entrypoint_cron.sh"
 
 for cronFile in $(ls "$CRON_FILE_PATH" | grep ".sh" | tr "\n" " "); do
+  cd $CRON_FILE_PATH
   if [ $firstFile == "y" ]; then
     echo "#$cronFile cron list" >"$CRON_FILE_PATH/merge_all_cron.sh"
     firstFile="n"
