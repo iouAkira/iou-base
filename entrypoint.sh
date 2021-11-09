@@ -20,11 +20,11 @@ function golangInit() {
         go env -w GOPROXY=$GO_PROXY,direct
     fi
 }
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-echo "@@                               @@"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "@@                                @@"
 echo "@@  开始时间 $(date +'%Y-%m-%d %H:%M:%S')  @@"
-echo "@@                               @@"
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "@@                                @@"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 if [ "$1" ]; then
     up_cmd=$1
     if [ "$APK_REPO" ]; then
@@ -49,11 +49,11 @@ fi
 if [ -z "$REPOS_CONFIG" ]; then
     export REPOS_CONFIG=$MNT_DIR/repos.json
 fi
-echo "-----------------------------------------读取[$REPOS_CONFIG]仓库相关配置，并进行执行配置-----------------------------------------"
+echo "========================================读取[$REPOS_CONFIG]仓库相关配置，并进行执行配置========================================"
 # 同步仓库
+echo "-e"
 repo_sync
 
-echo ""
 echo ">>>>>>>>>>>>执行仓库入口脚本"
 for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"//g"); do
     cd "$REPOS_DIR"
@@ -61,21 +61,22 @@ for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"
     repoBranch=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_branch")
     cd "$REPOS_DIR/$repoName"
     if [ -z "$repoBranch" ]; then
-        echo "未指定[$repoName]仓库分支，使用当前默认分支"
+        echo "[$repoName]仓库未指定分支，使用当前默认分支"
     else
         echo "[$repoName]仓库切换到指定的[$repoBranch]分支..."
         git checkout $repoBranch
     fi
 
     if [ -f "$REPOS_DIR/$repoName/iou-entry.sh" ]; then
-        echo "执行[$repoName]仓库下面的程序入口脚本"
+        echo "[$repoName]仓库下执行的程序入口脚本"
         sh iou-entry.sh
     else
-        echo "仓库[$repoName]不存在iou-entry.sh入口脚本文件，跳过..."
+        echo "[$repoName]仓库不存在iou-entry.sh入口脚本文件，跳过..."
     fi
+    echo "-e"
 done
 
-echo "--------------------------------------------------[$REPOS_CONFIG]配置结束---------------------------------------------------"
+echo "======================================================$REPOS_CONFIG]配置结束================================================"
 
 firstFile="y"
 echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >"$CRON_FILE_PATH/entrypoint_cron.sh"
@@ -92,6 +93,12 @@ for cronFile in $(ls "$CRON_FILE_PATH" | grep ".sh" | grep -v "merge_all_cron.sh
     echo "-e" >>"$CRON_FILE_PATH/merge_all_cron.sh"
 done
 
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+echo "@@                                @@"
+echo "@@  完成时间 $(date +'%Y-%m-%d %H:%M:%S')  @@"
+echo "@@                                @@"
+echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
 if [ "$up_cmd" ]; then
     echo "set crontab list"
     crontab "$CRON_FILE_PATH/merge_all_cron.sh"
@@ -100,8 +107,3 @@ if [ "$up_cmd" ]; then
 else
     echo "默认定时任务执行结束。"
 fi
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-echo "@@                               @@"
-echo "@@  结束时间 $(date +'%Y-%m-%d %H:%M:%S')  @@"
-echo "@@                               @@"
-echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
