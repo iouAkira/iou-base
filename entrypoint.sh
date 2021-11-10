@@ -114,6 +114,10 @@ for cronFile in $(ls "$CRON_FILE_PATH" | grep ".sh" | grep -v "merge_all_cron.sh
     echo "-e" >>"$CRON_FILE_PATH/merge_all_cron.sh"
 done
 
+echo "[定时任务列表] 更新定时任务列表"
+crontab "$CRON_FILE_PATH/merge_all_cron.sh"
+crontab -l | sed -e "s/^/[定时任务列表] /"
+
 echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 echo "@@                                @@"
 echo "@@  完成时间 $(date +'%Y-%m-%d %H:%M:%S')  @@"
@@ -121,8 +125,6 @@ echo "@@                                @@"
 echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 
 if [ "$up_cmd" ]; then
-    echo "set crontab list"
-    crontab "$CRON_FILE_PATH/merge_all_cron.sh"
     echo "keep running..."
     crond -f
 fi
