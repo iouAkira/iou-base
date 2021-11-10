@@ -114,9 +114,11 @@ for cronFile in $(ls "$CRON_FILE_PATH" | grep ".sh" | grep -v "merge_all_cron.sh
     echo "-e" >>"$CRON_FILE_PATH/merge_all_cron.sh"
 done
 
+echo "-e"
 echo "[定时任务列表] 更新定时任务列表"
 crontab "$CRON_FILE_PATH/merge_all_cron.sh"
 crontab -l | sed -e "s/^/[定时任务列表] /"
+echo "-e"
 
 echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 echo "@@                                @@"
