@@ -49,11 +49,11 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 							failCnt += 1
 						}
 					} else {
-						fmt.Printf("第%v个仓库，名字为%v，为私有库，但是账户、Token未配置，同步失败\n", i+1, repo.RepoName)
+						fmt.Printf("\n第%v个仓库，名字为%v，为私有库，但是账户、Token未配置，同步失败\n", i+1, repo.RepoName)
 						failCnt += 1
 					}
 				} else {
-					fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为公开仓库，开始同步\n", i+1, repo.RepoName)
+					fmt.Printf("\n↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为公开仓库，开始同步\n", i+1, repo.RepoName)
 					errSr := SyncRepo(repo.RepoURL, repo.RepoName, repo.GitAccount, repo.GitToken)
 					if errSr == nil {
 						succCnt += 1

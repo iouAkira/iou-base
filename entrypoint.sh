@@ -28,19 +28,19 @@ echo "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 if [ "$1" ]; then
     up_cmd=$1
     if [ "$APK_REPO" ]; then
-        sed -i "s/dl-cdn.alpinelinux.org/$APK_REPO/g" /etc/apk/repositories
+        sed -i "s/dl-cdn.alpinelinux.org/$APK_REPO/g" /etc/apk/repositories | sed -e "s/^/[容器首次启动初始化] /"
     fi
     if [ "$APK_ADD_PKG" ]; then
-        apk add $(echo $APK_ADD_PKG | tr "&" " ")
+        apk add $(echo $APK_ADD_PKG | tr "&" " ") | sed -e "s/^/[容器首次启动初始化] /"
     fi
     if [ "$INIT_ENVS" ]; then
         for env in $(echo "$INIT_ENVS" | tr "&" " "); do
-            "${env}Init"
+            "${env}Init" | sed -e "s/^/[容器首次启动初始化] /"
             if [ $? -ne 0 ]; then
-                echo "[$env]环境初始化出错❌，重启后继续尝试初始化"
+                echo "[容器首次启动初始化] [$env]环境初始化出错❌，重启后继续尝试初始化"
                 exit 1
             else
-                echo "[$env]环境初始化完成✅"
+                echo "[容器首次启动初始化] [$env]环境初始化完成✅"
             fi
         done
     fi
@@ -67,7 +67,7 @@ for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"
         echo "[$repoName] 仓库切换到指定的[$repoBranch]分支..."
         git checkout $repoBranch | sed -e "s/^/[$repoName] /"
     fi
-    if [ $(echo $repoEntrypoint | sed "s/null//g")  ]; then
+    if [ $(echo $repoEntrypoint | sed "s/null//g") ]; then
         echo "[$repoName] 仓库已配置指定的入口shell脚本文件"
         if expr "$repoEntrypoint" : 'http.*' &>/dev/null; then
             echo "[$repoName] 仓库配置指定的入口shell脚本为远程脚本，开始下载远程脚本 $repoEntrypoint"
