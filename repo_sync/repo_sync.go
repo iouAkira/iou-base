@@ -41,7 +41,7 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 			for i, repo := range repoConfig.Repos {
 				if repo.RepoPrivate {
 					if repo.GitAccount != "" && repo.GitToken != "" {
-						fmt.Printf("↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为私有库，账户、Token已配置，开始同步\n", i+1, repo.RepoName)
+						fmt.Printf("\n↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为私有库，账户、Token已配置，开始同步\n", i+1, repo.RepoName)
 						errSr := SyncRepo(repo.RepoURL, fmt.Sprintf("%v/%v", repoBaseDir, repo.RepoName), repo.GitAccount, repo.GitToken)
 						if errSr == nil {
 							succCnt += 1

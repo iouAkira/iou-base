@@ -52,27 +52,47 @@ fi
 echo "========================================读取[$REPOS_CONFIG]仓库相关配置，并进行执行配置========================================"
 # 同步仓库
 echo "-e"
-repo_sync
+repo_sync | sed -e "s/^/[仓库更新/同步] /"
 
-echo ">>>>>>>>>>>>执行仓库入口脚本"
-echo "-e"
+echo -e ">>>>>>>>>>>>>>>>>>>>执行仓库入口脚本\n"
 for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"//g"); do
     cd "$REPOS_DIR"
     repoName=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_name")
     repoBranch=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_branch")
+    repoEntryoint=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_entryoint")
     cd "$REPOS_DIR/$repoName"
     if [ -z "$repoBranch" ]; then
         echo "[$repoName]仓库未指定分支，使用当前默认分支"
     else
         echo "[$repoName]仓库切换到指定的[$repoBranch]分支..."
-        git checkout $repoBranch
+        git checkout $repoBranch | sed -e "s/^/[$repoName]/"
     fi
-
-    if [ -f "$REPOS_DIR/$repoName/iou-entry.sh" ]; then
-        echo "[$repoName]仓库下执行的程序入口脚本"
-        sh iou-entry.sh
+    if [ $repoEntryoint ]; then
+        echo "[$repoName]仓库已配置指定的入口shell脚本文件"
+        if expr "$repoEntryoint" : 'http.*' &>/dev/null; then
+            echo "[$repoName]指定的入口shell脚本为远程脚本，开始下载远程脚本 $repoEntryoint。"
+            wget -O iou-entry.sh "$repoEntryoint" | sed -e "s/^/[$repoName]/"
+            echo "[$repoName]指定的入口shell脚本下载完成，开始执行..."
+            sh iou-entry.sh | sed -e "s/^/[$repoName\/iou-entry.sh] /"
+            echo "[$repoName]指定的入口shell脚本下载完成，执行结束..."
+        else
+            if [ ! -f "$repoEntryoint" ]; then
+                echo "[$repoName]指定的入口shell脚本为挂载脚本文件，但是挂载文件$repoEntryoint不存在，跳过..."
+            else
+                echo "[$repoName]指定的入口shell脚本为挂载脚本文件，开始执行..."
+                cp -rf "$repoEntryoint" ./iou-entry.sh
+                sh iou-entry.sh | sed -e "s/^/[$repoName\/iou-entry.sh] /"
+                echo "[$repoName]指定的入口shell脚本为挂载脚本文件，开始结束..."
+            fi
+        fi
     else
-        echo "[$repoName]仓库不存在iou-entry.sh入口脚本文件，跳过..."
+        if [ -f "$REPOS_DIR/$repoName/iou-entry.sh" ]; then
+            echo "[$repoName]仓库下的入口shell脚本，开始执行..."
+            sh iou-entry.sh | sed -e "s/^/[$repoName\/iou-entry.sh] /"
+            echo "[$repoName]仓库下的入口shell脚本，执行结束..."
+        else
+            echo "[$repoName]仓库不存在iou-entry.sh入口脚本文件，跳过..."
+        fi
     fi
     echo "-e"
 done
@@ -105,6 +125,4 @@ if [ "$up_cmd" ]; then
     crontab "$CRON_FILE_PATH/merge_all_cron.sh"
     echo "keep running..."
     crond -f
-else
-    echo "默认定时任务执行结束。"
 fi
