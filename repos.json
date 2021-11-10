@@ -8,7 +8,8 @@
     {
       "repo_name": "iou-dd",
       "repo_url": "https://github.com/iouAkira/iou-dd.git",
-      "repo_branch": "main"
+      "repo_branch": "main",
+      "repo_entrypoint":"/data/dd_data/xxx.sh"
     },
     {
       "repo_name": "woof",

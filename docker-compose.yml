@@ -3,7 +3,7 @@ iou:
   container_name: iou
   restart: always
   volumes:
-    - ./data:/data
+    - ./data:/data #如果不挂载到/data目录需要在下面指定MNT_DIR环境变量配置对应目录
   tty: true
   environment:
     # 部分地区用户连接apk官方源速度可能较慢，可通过此变量更换不同地区的源 需要的放开APK_REPO注释并配置
