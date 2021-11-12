@@ -62,7 +62,7 @@ for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"
     repoBranch=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_branch")
     repoEntrypoint=$(cat $REPOS_CONFIG | jq -r ".repos | .[$repoInx] | .repo_entrypoint")
     cd "$REPOS_DIR/$repoName"
-    if [ -z "$repoBranch" ]; then
+    if [ -z $(echo $repoBranch | sed "s/null//g") ]; then
         echo "[$repoName] 仓库未指定分支，使用当前默认分支"
     else
         echo "[$repoName] 仓库切换到指定的[$repoBranch]分支..."
