@@ -31,6 +31,11 @@ func main() {
 	readRepoConfig(repoConfigJson, repoBaseDir)
 }
 
+// @title	readRepoConfig
+// @description	读取配置文件里面的，每个仓库配置信息
+// @auth	@iouAkira
+// @param     repoConfigJson string 
+// @param     repoBaseDir string
 func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 	if rs.Exists(repoConfigJson) {
 		fmt.Printf("检测到仓库配置文件 %v，开始同步仓库操作。\n", repoConfigJson)
@@ -42,7 +47,7 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 				if repo.RepoPrivate {
 					if repo.GitAccount != "" && repo.GitToken != "" {
 						fmt.Printf("\n↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为私有库，账户、Token已配置，开始同步\n", i+1, repo.RepoName)
-						errSr := SyncRepo(repo.RepoURL, fmt.Sprintf("%v/%v", repoBaseDir, repo.RepoName), repo.GitAccount, repo.GitToken)
+						errSr := syncRepo(repo.RepoURL, fmt.Sprintf("%v/%v", repoBaseDir, repo.RepoName), repo.GitAccount, repo.GitToken)
 						if errSr == nil {
 							succCnt += 1
 						} else {
@@ -54,7 +59,7 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 					}
 				} else {
 					fmt.Printf("\n↓↓↓↓↓↓↓↓↓↓↓↓ 第%v个仓库，目录名字为[%v]，为公开仓库，开始同步\n", i+1, repo.RepoName)
-					errSr := SyncRepo(repo.RepoURL, repo.RepoName, repo.GitAccount, repo.GitToken)
+					errSr := syncRepo(repo.RepoURL, repo.RepoName, repo.GitAccount, repo.GitToken)
 					if errSr == nil {
 						succCnt += 1
 					} else {
@@ -71,7 +76,16 @@ func readRepoConfig(repoConfigJson string, repoBaseDir string) {
 		fmt.Printf("仓库配置文件 %v 不存在，跳过同步仓库操作。\n", repoConfigJson)
 	}
 }
-func SyncRepo(repoUrl string, repoPath string, gitAccount string, gitToken string, ) error {
+
+
+// @title	syncRepo
+// @description	根据传入仓库信息配置，同步仓库
+// @auth	@iouAkira
+// @param1     repoUrl string 
+// @param2     repoPath string
+// @param3     gitAccount string 
+// @param4     gitToken string
+func syncRepo(repoUrl string, repoPath string, gitAccount string, gitToken string, ) error {
 	if rs.Exists(repoPath) {
 		fmt.Printf("脚本仓库目录已存在，执行pull\n")
 		return pullRepo(repoPath, gitAccount, gitToken)
@@ -82,6 +96,13 @@ func SyncRepo(repoUrl string, repoPath string, gitAccount string, gitToken strin
 
 }
 
+// @title	cloneRepo
+// @description	根据传入仓库信息配置，clone仓库
+// @auth	@iouAkira
+// @param1     repoUrl string 
+// @param2     repoPath string
+// @param3     gitAccount string 
+// @param4     gitToken string
 func cloneRepo(url string, directory string, gitAccount string, gitToken string) error {
 	fmt.Printf("git clone %s to %s\n", url, directory)
 
@@ -108,6 +129,12 @@ func cloneRepo(url string, directory string, gitAccount string, gitToken string)
 	return nil
 }
 
+// @title	pullRepo
+// @description	根据传入仓库信息配置，更新仓库
+// @auth	@iouAkira
+// @param2     repoPath string
+// @param3     gitAccount string 
+// @param4     gitToken string
 func pullRepo(path string, gitAccount string, gitToken string) error {
 	//对异常状态进行捕获并输出到缓冲区
 	defer func() {
@@ -116,7 +143,7 @@ func pullRepo(path string, gitAccount string, gitToken string) error {
 			debug.PrintStack()
 		}
 	}()
-	resetHard(path) //还原本地修改操作放到shell_default_scripts.sh里面
+	resetHard(path) //还原本地修改操作
 	// We instantiate a new repository targeting the given path (the .git folder)
 	r, errP := git.PlainOpen(path)
 	rs.CheckIfError(errP)
@@ -155,6 +182,10 @@ func pullRepo(path string, gitAccount string, gitToken string) error {
 	return nil
 }
 
+// @title	pullRepo
+// @description	根据传入仓库流经还原本地修改，防止更新仓库冲突
+// @auth	@iouAkira
+// @param     repoPath string
 func resetHard(path string) {
 	var cmdArguments []string
 	resetCmd := []string{"git", "-C", path, "reset", "--hard"}
@@ -174,8 +205,6 @@ func resetHard(path string) {
 	if err = command.Wait(); err != nil {
 		fmt.Printf(err.Error())
 	} else {
-		//fmt.Println(command.ProcessState.Pid())
-		//fmt.Println(command.ProcessState.Sys().(syscall.WaitStatus).ExitStatus())
 		fmt.Printf("还原本地修改（新增文件不受影响）防止更新冲突...\n")
 	}
 }
