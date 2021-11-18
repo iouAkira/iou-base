@@ -5,7 +5,6 @@
 - 该镜像容器启动是所有的功能依赖网络初始化，使用该镜像请确保自己网络的连通性。选择配置合适自己的源仓库地址。
 - 如果要使用`crontab`定时任务的功能，请在各个仓库目录的根下面`iou-entry.sh`脚本中将任务写入到`/iouCron`的`.sh`文件内，文件命名参考`仓库名_功能目录名_cron.sh`，（镜像会默认会合并`/iouCron/`的所有`.sh`文件，合并写入系统定时任务并启用）
 ## docker-compose 环境变量
-
 | Name |属性|说明|
 | :---------: | ---- | ------------------------------------------------------------ |
 | `APK_REPO` | 非必须 |部分地区用户连接`apk`官方源速度可能较慢，可通过此变量更换不同地区的源。例：`APK_REPO=mirrors.tuna.tsinghua.edu.cn`|
@@ -17,5 +16,5 @@
 |配置文件||(容器启动需要挂载一个`/data`文件夹，`/data`下面有`repos.json`需要使用的仓库信息配置和每个仓库对应的数据存放文件夹`repo1_data`、`repo2_data`类似等等)|
 | `MNT_DIR` | 不建议修改 |配置的所有仓库产生的需要查看的数据请放在该目录下。默认`/data` 例如：`/data/repo1_data`，`/data/repo2_data`|
 | `REPOS_DIR` | 不建议修改 |配置的所有仓库都clone在该目录下。默认值`/iouRepos` 例如：`/iouRepos/repo1`，`/iouRepos/repo2`|
-| `CRON_FILE_PATH` | 不建议修改 |所有需要加入crontab的定时任务文件`xxx.sh`都需要生成在该目录。默认值`/iouCron` 例如：`/iouCron/repo1_cron.sh`，`/iouCron/repo2_cron.sh`|
+| `CRON_FILE_DIR` | 不建议修改 |所有需要加入crontab的定时任务文件`xxx.sh`都需要生成在该目录。默认值`/iouCron` 例如：`/iouCron/repo1_cron.sh`，`/iouCron/repo2_cron.sh`|
 | `/data/repos.json` | 非必须 |默认为空启动一个什么功能都没有容器，可以手动进入容器配置想使用的功能。如果配置仓库地址，被使用仓库根需要包含一个`iou-entry.sh`里面包含的需要包含配置环境启动使用该仓库指令的脚本。当前`iou-entry.sh`里面可以继续嵌套调用`shell`配合完成自己想要的功能|

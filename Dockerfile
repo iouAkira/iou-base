@@ -17,7 +17,7 @@ LABEL AUTHOR="iouAkira <ZS5ha2ltb3RvLmFraXJhQGdtYWlsLmNvbQ==>"
 ENV VER=0.1 \
     MNT_DIR=/data \
     REPOS_DIR=/iouRepos \
-    CRON_FILE_PATH=/iouCron
+    CRON_FILE_DIR=/iouCron
 
 RUN set -ex \
     && apk update && apk upgrade\

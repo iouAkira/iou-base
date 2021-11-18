@@ -101,23 +101,23 @@ done
 echo "========================================================$REPOS_CONFIG]配置结束================================================="
 
 firstFile="y"
-echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >"$CRON_FILE_PATH/entrypoint_cron.sh"
+echo "05 * * * * entrypoint.sh >> $MNT_DIR/entrypoint.log 2>&1 " >"$CRON_FILE_DIR/entrypoint_cron.sh"
 
-for cronFile in $(ls "$CRON_FILE_PATH" | grep ".sh" | grep -v "merge_all_cron.sh" | tr "\n" " "); do
-    cd $CRON_FILE_PATH
+for cronFile in $(ls "$CRON_FILE_DIR" | grep ".sh" | grep -v "merge_all_cron.sh" | tr "\n" " "); do
+    cd $CRON_FILE_DIR
     if [ $firstFile == "y" ]; then
-        echo "#[$cronFile]文件任务列表" >"$CRON_FILE_PATH/merge_all_cron.sh"
+        echo "#[$cronFile]文件任务列表" >"$CRON_FILE_DIR/merge_all_cron.sh"
         firstFile="n"
     else
-        echo "#[$cronFile]文件任务列表" >>"$CRON_FILE_PATH/merge_all_cron.sh"
+        echo "#[$cronFile]文件任务列表" >>"$CRON_FILE_DIR/merge_all_cron.sh"
     fi
-    cat $cronFile >>"$CRON_FILE_PATH/merge_all_cron.sh"
-    echo "-e" >>"$CRON_FILE_PATH/merge_all_cron.sh"
+    cat $cronFile >>"$CRON_FILE_DIR/merge_all_cron.sh"
+    echo "-e" >>"$CRON_FILE_DIR/merge_all_cron.sh"
 done
 
 echo "-e"
 echo "[定时任务列表] 更新定时任务列表"
-crontab "$CRON_FILE_PATH/merge_all_cron.sh"
+crontab "$CRON_FILE_DIR/merge_all_cron.sh"
 crontab -l | sed -e "s/^/[定时任务列表] /"
 echo "-e"
 

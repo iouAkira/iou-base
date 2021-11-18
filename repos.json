@@ -3,13 +3,19 @@
     {
       "repo_name": "iou-base",
       "repo_url": "https://github.com/iouAkira/iou-base.git",
-      "repo_branch": "main"
+      "repo_branch": "main",
+      "extra": {
+        "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
+      }
     },
     {
       "repo_name": "iou-dd",
       "repo_url": "https://github.com/iouAkira/iou-dd.git",
       "repo_branch": "main",
-      "repo_entrypoint":"/data/dd_data/xxx.sh"
+      "repo_entrypoint": "/data/dd_data/xxx.sh",
+      "extra": {
+        "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
+      }
     },
     {
       "repo_name": "woof",
@@ -17,7 +23,10 @@
       "repo_branch": "master",
       "repo_private": true,
       "git_account": "iouAkira",
-      "git_token": "xxxxxxxx"
+      "git_token": "xxxxxxxx",
+      "extra": {
+        "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
+      }
     }
   ]
 }
