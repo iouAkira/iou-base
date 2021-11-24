@@ -1,4 +1,6 @@
 {
+  "botHandlerToken": "交互管理bot的Token",
+  "botAdminID": "交互管理bot的管理员ID",
   "repos": [
     {
       "repo_name": "iou-base",
@@ -6,7 +8,8 @@
       "repo_branch": "main",
       "extra": {
         "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
-      }
+      },
+      "reg_command": []
     },
     {
       "repo_name": "iou-dd",
@@ -15,7 +18,23 @@
       "repo_entrypoint": "/data/dd_data/xxx.sh",
       "extra": {
         "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
-      }
+      },
+      "reg_command": [
+        {
+          "prefix": "/",
+          "name": "node",
+          "help": "可交互选择执行对应路径js脚本",
+          "handerFunc": "NodeHandler",
+          "controllerFilePath": "xxx/controller/node_controller.go"
+        },
+        {
+          "prefix": "/",
+          "name": "example",
+          "help": "配置示例",
+          "handerFunc": "注册命令的监听函数",
+          "controllerFilePath": "注册命令的监听函数文件在仓库里的相对路径"
+        }
+      ]
     },
     {
       "repo_name": "woof",
@@ -26,7 +45,8 @@
       "git_token": "xxxxxxxx",
       "extra": {
         "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
-      }
+      },
+      "reg_command": []
     }
   ]
 }
