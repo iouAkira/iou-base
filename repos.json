@@ -9,7 +9,7 @@
       "extra": {
         "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
       },
-      "reg_command": []
+      "reg_command（该参数暂不可用）": []
     },
     {
       "repo_name": "iou-dd",
@@ -19,7 +19,7 @@
       "extra": {
         "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
       },
-      "reg_command": [
+      "reg_command（该参数暂不可用）": [
         {
           "prefix": "/",
           "name": "node",
@@ -46,7 +46,7 @@
       "extra": {
         "key": "extra 可以加任意自己在想在shell 通过jq里面想使用的参数，按需自行拓展"
       },
-      "reg_command": []
+      "reg_command（该参数暂不可用）": []
     }
   ]
 }
