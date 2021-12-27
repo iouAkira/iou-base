@@ -52,7 +52,7 @@
   "local_dir": [
     {
       "dir_name": "xxxx",
-      "dir_entrypoint": "/data/xxxx_data/entry.sh",
+      "dir_entrypoint": "本地挂载不建议使用此变量，iou-entry.sh放入xxxx根目录即可",
       "reg_command（该参数暂不可用）": []
     }
   ]
