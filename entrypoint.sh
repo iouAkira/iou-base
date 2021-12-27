@@ -45,7 +45,7 @@ if [ "$1" ]; then
         done
     fi
 fi
-# 是否指定了仓库信息配置文件的路径，未制定，自动寻找MNT_DIR根木repos.json
+# 是否指定了仓库信息配置文件的路径，未指定，自动寻找MNT_DIR根木repos.json
 if [ -z "$REPOS_CONFIG" ]; then
     export REPOS_CONFIG=$MNT_DIR/repos.json
 fi
@@ -99,6 +99,46 @@ for repoInx in $(cat $REPOS_CONFIG | jq .repos | jq 'keys|join(" ")' | sed "s/\"
         echo "-e"
     else
         echo "[$repoName] 仓库目录不存在，可能clone失败，跳过..."
+    fi
+done
+
+echo -e "\n>>>>>>>>>>>>>>>>>>>>执行挂载本地目录入口脚本\n"
+for repoInx in $(cat $REPOS_CONFIG | jq .local_dir | jq 'keys|join(" ")' | sed "s/\"//g"); do
+    cd "$LOCAL_DIR"
+    dirName=$(cat $REPOS_CONFIG | jq -r ".local_dir | .[$repoInx] | .dir_name")
+    dirEntrypoint=$(cat $REPOS_CONFIG | jq -r ".local_dir | .[$repoInx] | .dir_entrypoint")
+    if [ -d "$LOCAL_DIR/$dirName" ]; then
+        cd "$LOCAL_DIR/$dirName"
+        if [ $(echo $dirEntrypoint | sed "s/null//g") ]; then
+            echo "[$dirName] 挂载目录已配置指定的入口shell脚本文件"
+            if expr "$dirEntrypoint" : 'http.*' &>/dev/null; then
+                echo "[$dirName] 挂载目录配置指定的入口shell脚本为远程脚本，开始下载远程脚本 $dirEntrypoint"
+                wget -O iou-entry.sh "$dirEntrypoint" | sed -e "s/^/[$dirName]/"
+                echo "[$dirName] 挂载目录配置指定的入口shell脚本下载完成，开始执行..."
+                sh iou-entry.sh | sed -e "s/^/[$dirName\/iou-entry.sh] /"
+                echo "[$dirName] 挂载目录配置指定的入口shell脚本，执行结束..."
+            else
+                if [ ! -f "$dirEntrypoint" ]; then
+                    echo "[$dirName] 挂载目录配置指定的入口shell脚本为挂载脚本文件，但是挂载文件$dirEntrypoint不存在，跳过..."
+                else
+                    echo "[$dirName] 挂载目录配置指定的入口shell脚本为挂载脚本文件，开始执行..."
+                    cp -rf "$dirEntrypoint" ./iou-entry.sh
+                    sh iou-entry.sh | sed -e "s/^/[$dirName\/iou-entry.sh] /"
+                    echo "[$dirName] 挂载目录配置指定的入口shell脚本为挂载脚本文件，开始结束..."
+                fi
+            fi
+        else
+            if [ -f "$LOCAL_DIR/$dirName/iou-entry.sh" ]; then
+                echo "[$dirName] 挂载目录为默认入口shell脚本，开始执行..."
+                sh iou-entry.sh | sed -e "s/^/[$dirName\/iou-entry.sh] /"
+                echo "[$dirName] 挂载目录为默认入口shell脚本，执行结束..."
+            else
+                echo "[$dirName] 挂载目录为默认入口shell脚本iou-entry.sh不存在，跳过..."
+            fi
+        fi
+        echo "-e"
+    else
+        echo "[$dirName] 挂载目录不存在，请检查挂载路径，跳过..."
     fi
 done
 

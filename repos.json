@@ -48,5 +48,12 @@
       },
       "reg_command（该参数暂不可用）": []
     }
+  ],
+  "local_dir": [
+    {
+      "dir_name": "xxxx",
+      "dir_entrypoint": "/data/xxxx_data/entry.sh",
+      "reg_command（该参数暂不可用）": []
+    }
   ]
 }
