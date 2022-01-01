@@ -1,13 +1,15 @@
 package models
 
-// 容器配置
-type ContainerConfig struct {
+// IouConfig 容器配置
+type IouConfig struct {
 	BotHandlerToken string `json:"botHandlerToken"`
-	BotAdminID      string `json:"botAdminID"`
+	BotAdminID      int64  `json:"botAdminID"`
+	RepoBaseDir     string `json:"repoBaseDir"`
+	DataBaseDir     string `json:"dataBaseDir"`
 	Repos           []Repo `json:"repos"`
 }
 
-// 仓库配置信息
+// Repo 仓库配置信息
 type Repo struct {
 	RepoName       string       `json:"repo_name"`
 	RepoURL        string       `json:"repo_url"`
@@ -19,7 +21,7 @@ type Repo struct {
 	GitToken       string       `json:"git_token"`
 }
 
-// 仓库注册bot指令需要配置的信息
+// RegCommand 仓库注册bot指令需要配置的信息
 type RegCommand struct {
 	Prefix             string `json:"prefix"`
 	Name               string `json:"name"`

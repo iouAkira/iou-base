@@ -8,7 +8,6 @@ import (
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 )
 
-// auth @clamp
 type Context struct {
 	Request          *tgbotapi.BotAPI
 	Update           *tgbotapi.Update
@@ -18,12 +17,10 @@ type Context struct {
 	HandlerPrefixStr string
 }
 
-// auth @clamp
 func (c *Context) reset() {
 	*c = Context{}
 }
 
-// Get
 func (c *Context) Get(key string) (value interface{}, exists bool) {
 	c.mu.RLock()
 	value, exists = c.Keys[key]
@@ -42,21 +39,6 @@ func (c *Context) Req(chat tgbotapi.Chattable) (*tgbotapi.APIResponse, error) {
 
 //Vars 获取当前路由下的参数信息，当前用空格分割并返回给一个切片数组
 func (c *Context) Vars() []string {
-	var cc string
-	if c.Update.Message != nil {
-		cc = c.Update.Message.Text
-	} else {
-		cc = c.Update.CallbackQuery.Data
-	}
-	cmd, err := ParseCmd(cc, c.engine)
-	if err != nil {
-		return nil
-	}
-	return cmd.Params
-}
-
-//VarsCallback 获取当前路由下的参数信息，当前用空格分割并返回给一个切片数组
-func (c *Context) Varswiyh() []string {
 	var cc string
 	if c.Update.Message != nil {
 		cc = c.Update.Message.Text
@@ -110,3 +92,17 @@ func ParseCmd(cmd string, engine IPrefixFunc) (Command, error) {
 	cmdST.Params = cmdMsgSplit[1:]
 	return cmdST, nil
 }
+
+// RedirectToCmd 通过字符串路径跳转到指定路由,支持后续，参数数组结构
+//func (c *Context) RedirectToCmd(cmd string, args ...string) bool {
+//	cmd = strings.Trim(cmd, " ")
+//	if len(args) > 0 {
+//		cmd = CommandHelp(cmd, args...)
+//	}
+//	if command, err := ParseCmd(cmd, c.engine); err != nil {
+//		log.Println("跳转出错:", err)
+//		return false
+//	} else {
+//		return c.RedirectTo(&command)
+//	}
+//}
