@@ -5,6 +5,8 @@ function pythonInit() {
     if [ $PIP_REPO ]; then
         pip3 config set global.index-url $PIP_REPO
     fi
+    rm /usr/lib/python*/EXTERNALLY-MANAGED && \
+    python3 -m ensurepip && \
     pip3 install --upgrade pip
 }
 function nodeInit() {
